@@ -1,7 +1,7 @@
 package utils
 
 object IOUtils {
-    fun readString(): String {
-        return readLine()?.lowercase().orEmpty()
+    fun readString(default: String = "Player"): String {
+        return readLine() ?: default
     }
 }

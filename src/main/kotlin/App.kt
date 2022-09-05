@@ -1,5 +1,9 @@
+import gameMode.GameMode
+import gameMode.ModePvC
+import gameMode.ModePvP
 import utils.IOUtils
 import utils.ValidationUtils
+import kotlin.system.exitProcess
 
 class App {
     companion object{
@@ -23,8 +27,9 @@ class App {
             ======================================
             1. Play with Player
             2. Play with Computer
+            3. Exit
             ======================================
-            Enter menu ? (1/2)
+            Enter menu ? (1/2/3)
             ======================================
         """.trimIndent())
     }
@@ -37,6 +42,9 @@ class App {
             "2" -> {
                 openMenuPvC()
             }
+            "3" -> {
+                exitProcess(0)
+            }
             else -> {
                 println("No menu matches")
                 start()
@@ -47,7 +55,11 @@ class App {
     private fun openMenuPvC() {
         val(playerOne,playerOneName) = inputPlayerOne()
         println("======================================")
-        println("$playerOneName : $playerOne")
+        printGameResult(ModePvC(playerOne,playerOneName))
+        printCloseMenu()
+        readLine()?.let{
+            closeMenu(it.lowercase())
+        }
         println("======================================")
     }
 
@@ -61,11 +73,42 @@ class App {
         println("Player 2 choose: Rock, Scissor, Paper")
         val playerTwo = inputPlayerChoice()
         println("======================================")
-        println("""
-            "$playerOneName : $playerOne"
-            "$playerTwoName : $playerTwo"
-        """.trimIndent())
+        printGameResult(ModePvP(playerOne,playerTwo,playerOneName,playerTwoName))
         println("======================================")
+        printCloseMenu()
+        readLine()?.let{
+            closeMenu(it.lowercase())
+        }
+        println("======================================")
+    }
+
+    private fun closeMenu(menu: String) {
+        when(menu){
+            "y" -> {
+                start()
+            }
+            "n" -> {
+                exitProcess(0)
+            }
+            else -> {
+                printErrorInput()
+            }
+        }
+    }
+
+    private fun printErrorInput() {
+        println("you must choose between: Y/N")
+        readLine()?.let{
+            closeMenu(it.lowercase())
+        }
+    }
+
+    private fun printCloseMenu() {
+        println("""          
+            ======================================
+            Try Again ? (Y/N)
+            ======================================
+        """.trimIndent())
     }
 
     private fun inputPlayerOne(): Pair<String, String> {
@@ -76,6 +119,11 @@ class App {
         println("Player 1 choose: Rock, Scissor, Paper")
         val playerOne = inputPlayerChoice()
         return Pair(playerOne,playerOneName)
+    }
+
+    private fun printGameResult(gameMode: GameMode){
+        gameMode.printGameModeName()
+        gameMode.printResultOfGame()
     }
 
     private fun inputPlayerChoice(): String {
@@ -93,4 +141,5 @@ class App {
         }
         return choice
     }
+
 }
